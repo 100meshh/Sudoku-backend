@@ -38,7 +38,9 @@ mongoose
   })
   .catch((err) => console.log(err));
 
-
+app.get("/", (req, res) => {
+  res.send("Sudoku backend is live!");
+});
 
 // Registers user to database
 app.post("/register", async (req, res) => {
@@ -195,22 +197,22 @@ app.get("/getDetails", verifyJWT, async (req, res) => {
   // Find the user with the specified username
   User.findOne({ username: username })
     .then((user) => {
-        // If no user was found, return a 404 response
-        if (!user) {
-            res.status(404).json({ message: `User '${username}' not found` });
-            return;
-        }
+      // If no user was found, return a 404 response
+      if (!user) {
+        res.status(404).json({ message: `User '${username}' not found` });
+        return;
+      }
 
-        // If a user was found, return their details
-        res.json({
-            username: user.username,
-            Games: user.Games,
-            Score: user.Score,
-        });
+      // If a user was found, return their details
+      res.json({
+        username: user.username,
+        Games: user.Games,
+        Score: user.Score,
+      });
     })
     .catch((error) => {
-        // If an error occurred while retrieving the user, return a 500 response
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+      // If an error occurred while retrieving the user, return a 500 response
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
     });
 });
