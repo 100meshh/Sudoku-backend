@@ -32,15 +32,13 @@ mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ MongoDB connected successfully");
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`🚀 Server started on port ${PORT}`);
     });
   })
   .catch((err) => console.log(err));
 
-app.get("/", (req, res) => {
-  res.send("Sudoku backend is live!");
-});
+
 
 // Registers user to database
 app.post("/register", async (req, res) => {
