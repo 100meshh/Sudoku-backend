@@ -12,9 +12,26 @@ const Puzzle = require("./models/puzzle");
 
 const app = express();
 
+
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
+
 app.use(bodyParser.json(), urlencodedParser);
-app.use(cors());
+const allowedOrigins = [
+  'http://localhost:3000'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin like mobile apps or curl
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'CORS policy does not allow access from this origin: ' + origin;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
 
 const dbURI = process.env.ATLAS_URI;
 const PORT = process.env.PORT || 8000;
@@ -32,12 +49,15 @@ mongoose
   .connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("✅ MongoDB connected successfully");
-    app.listen(PORT, "0.0.0.0", () => {
+    app.listen(PORT, () => {
       console.log(`🚀 Server started on port ${PORT}`);
     });
   })
   .catch((err) => console.log(err));
 
+app.get('/', (req, res) => {
+  res.send('Backend server is running');
+});
 
 
 // Registers user to database
